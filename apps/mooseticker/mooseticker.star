@@ -107,57 +107,51 @@ def build_card(symbol, range_sel, show_pct):
     price_text = format_price(current)
     interval = range_label(range_sel)
 
-    header = render.Row(
-        expanded = True,
-        main_align = "space_between",
-        cross_align = "center",
-        children = [
-            render.Text(content = symbol, font = FONT_SYMBOL, color = COLOR_SYMBOL),
-            render.Text(content = interval, font = FONT_META, color = COLOR_DIM),
-        ],
-    )
-
-    price_row = render.Row(
-        expanded = True,
-        main_align = "space_between",
-        cross_align = "center",
-        children = [
-            render.Text(content = price_text, font = FONT_PRICE, color = COLOR_PRICE),
-            render.Text(content = diff_text, font = FONT_META, color = accent),
-        ],
-    )
-
-    chart = render.Stack(
-        children = [
-            render.Box(width = 64, height = 14, color = COLOR_BG),
-            render.Plot(
-                data = plot_data,
-                width = 64,
-                height = 14,
-                color = accent,
-                color_inverted = accent,
-                fill = True,
-            ),
-            wipe_overlay(),
-        ],
-    )
-
-    card = render.Box(
-        width = 64,
-        height = 32,
-        color = COLOR_BG,
+    # Full-bleed sparkline under large text so the card stays 64x32 and visual.
+    overlay = render.Padding(
+        pad = (1, 1, 1, 1),
         child = render.Column(
             expanded = True,
-            main_align = "space_evenly",
+            main_align = "space_between",
             children = [
-                header,
-                price_row,
-                chart,
+                render.Row(
+                    expanded = True,
+                    main_align = "space_between",
+                    cross_align = "center",
+                    children = [
+                        render.Text(content = symbol, font = FONT_SYMBOL, color = COLOR_SYMBOL),
+                        render.Row(
+                            children = [
+                                render.Text(content = diff_text, font = FONT_META, color = accent),
+                                render.Text(content = " " + interval, font = FONT_META, color = COLOR_DIM),
+                            ],
+                        ),
+                    ],
+                ),
+                render.Text(content = price_text, font = FONT_PRICE, color = COLOR_PRICE),
             ],
         ),
     )
 
-    return card
+    return render.Box(
+        width = 64,
+        height = 32,
+        color = COLOR_BG,
+        child = render.Stack(
+            children = [
+                render.Plot(
+                    data = plot_data,
+                    width = 64,
+                    height = 32,
+                    color = accent,
+                    color_inverted = accent,
+                    fill = True,
+                ),
+                wipe_overlay(),
+                overlay,
+            ],
+        ),
+    )
 
 def sparkline_data(closes, last_close):
     data = []
@@ -187,9 +181,9 @@ def sparkline_data(closes, last_close):
     return data
 
 def wipe_overlay():
-    # Hard left-to-right reveal of the sparkline (Index Ticker pattern, shorter).
+    # Hard left-to-right reveal of the full-bleed sparkline.
     return animation.Transformation(
-        child = render.Box(width = 64, height = 14, color = COLOR_BG),
+        child = render.Box(width = 64, height = 32, color = COLOR_BG),
         duration = 20,
         delay = 0,
         origin = animation.Origin(0, 0),
