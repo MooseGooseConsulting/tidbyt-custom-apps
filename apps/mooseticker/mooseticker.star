@@ -170,6 +170,7 @@ def sparkline_data(closes, last_close):
             previous = tick
         pct = (tick - last_close) / last_close * 100
         data.append((i, pct))
+
     # Keep plot readable on 64px
     if len(data) > 64:
         step = int(len(data) / 64)
