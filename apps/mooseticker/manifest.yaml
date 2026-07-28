@@ -1,0 +1,17 @@
+---
+id: moose-ticker
+name: Moose Ticker
+summary: Neon watchlist market cards
+desc: Cycles a stock watchlist as full-bleed neon cards with Yahoo Finance sparklines. No API key required.
+author: coldaine
+fileName: mooseticker.star
+packageName: mooseticker
+recommendedInterval: 1
+category: finance
+tags:
+  - finance
+  - tickers
+  - custom
+  - neon
+published: '2026-07-28T00:00:00Z'
+updated: '2026-07-28T00:00:00Z'
